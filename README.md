@@ -1,7 +1,7 @@
-UGA Thesis Work
+My Thesis Work
 ====================================================================
 
-This repository contains my Ph.D thesis work in University of Georgia.
+This repository contains my Ph.D thesis work.
 
 "Automated Generating CTF Challenges with Program Analysis Tools Resistance", Yue Yin, December 2018.
 
