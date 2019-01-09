@@ -1,0 +1,21 @@
+the script requires 4 input to execute properly
+
+1. a file input named "command_file" that contains the command to launch qemu and collect translation block coverage. the content looks like the following:
+        '''./qemu-x86_64 -d nochain,tb -D {}  /tmp/expdata/1520403048/cb_2018-03-07-011048.976894/pngtest/binary/cb  --strict {}'''
+        The command line consists of two parts. The first part '''./qemu-x86_64 -d nochain,tb -D {}''' is the qemu usermode launching command, the second part is the actual target binary launching command.
+
+2. the AFL queue directory to be checked.
+
+3. the directory that contains the testcases to be checked
+
+4. the very first address to be logged in AFL's bitmap.
+
+execute the script with:
+        python check_hit.py queue_dir sync_dir start_address
+to start the analyze.
+
+
+After the AFL queue is fully analyzed, the result will be saved into a result file called "edge_file", which can be used directly later to skip the analyze process of the AFL queue with command:
+        python check_hit.py FILE sync_dir start_address
+
+

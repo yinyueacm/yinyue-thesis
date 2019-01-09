@@ -1,0 +1,2 @@
+./qemu-x86_64 -d nochain,tb -D {}  /opt/exp-data/cb_2018-04-09-004036.887407/./ranlib/binary/cb {}
+

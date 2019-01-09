@@ -1,0 +1,152 @@
+diff -ruN qemu-2.10.0/accel/tcg/cpu-exec.c qemu-2.10.0-new/accel/tcg/cpu-exec.c
+--- qemu-2.10.0/accel/tcg/cpu-exec.c	2017-08-30 12:50:40.000000000 -0400
++++ qemu-2.10.0-new/accel/tcg/cpu-exec.c	2018-04-23 23:04:03.144768847 -0400
+@@ -36,6 +36,8 @@
+ #include "sysemu/cpus.h"
+ #include "sysemu/replay.h"
+ 
++extern afl_entry_point, afl_start_code, afl_end_code, entry_flag;
++
+ /* -icount align implementation. */
+ 
+ typedef struct SyncClocks {
+@@ -144,11 +146,20 @@
+     int tb_exit;
+     uint8_t *tb_ptr = itb->tc_ptr;
+ 
++    if(!entry_flag && itb->pc == afl_entry_point){
++        entry_flag = 1;
++    }
++
+     qemu_log_mask_and_addr(CPU_LOG_EXEC, itb->pc,
+                            "Trace %p [%d: " TARGET_FMT_lx "] %s\n",
+                            itb->tc_ptr, cpu->cpu_index, itb->pc,
+                            lookup_symbol(itb->pc));
+ 
++    if (entry_flag && itb->pc >= afl_start_code && itb->pc <= afl_end_code){
++        qemu_log_mask(CPU_LOG_TB,
++                           TARGET_FMT_lx ":" TARGET_FMT_lx "\n",
++                           itb->pc, itb->pc+itb->size);
++    }
+ #if defined(DEBUG_DISAS)
+     if (qemu_loglevel_mask(CPU_LOG_TB_CPU)
+         && qemu_log_in_addr_range(itb->pc)) {
+diff -ruN qemu-2.10.0/include/qemu/log.h qemu-2.10.0-new/include/qemu/log.h
+--- qemu-2.10.0/include/qemu/log.h	2017-08-30 12:50:41.000000000 -0400
++++ qemu-2.10.0-new/include/qemu/log.h	2018-04-23 22:51:51.500768375 -0400
+@@ -43,6 +43,7 @@
+ #define CPU_LOG_PAGE       (1 << 14)
+ #define LOG_TRACE          (1 << 15)
+ #define CPU_LOG_TB_OP_IND  (1 << 16)
++#define CPU_LOG_TB         (1 << 17)
+ 
+ /* Returns true if a bit is set in the current loglevel mask
+  */
+diff -ruN qemu-2.10.0/linux-user/elfload.c qemu-2.10.0-new/linux-user/elfload.c
+--- qemu-2.10.0/linux-user/elfload.c	2017-08-30 12:50:41.000000000 -0400
++++ qemu-2.10.0-new/linux-user/elfload.c	2018-04-23 23:01:56.504768765 -0400
+@@ -20,6 +20,11 @@
+ 
+ #define ELF_OSABI   ELFOSABI_SYSV
+ 
++abi_ulong afl_entry_point, /* ELF entry point (_start) */
++          afl_start_code,  /* .text start pointer      */
++          afl_end_code;    /* .text end pointer        */
++abi_ulong entry_flag = 0;
++
+ /* from personality.h */
+ 
+ /*
+@@ -2085,6 +2090,8 @@
+     info->brk = 0;
+     info->elf_flags = ehdr->e_flags;
+ 
++    if(!afl_entry_point) afl_entry_point = info->entry;
++
+     for (i = 0; i < ehdr->e_phnum; i++) {
+         struct elf_phdr *eppnt = phdr + i;
+         if (eppnt->p_type == PT_LOAD) {
+@@ -2118,9 +2125,11 @@
+             if (elf_prot & PROT_EXEC) {
+                 if (vaddr < info->start_code) {
+                     info->start_code = vaddr;
++                    if (!afl_start_code) afl_start_code = vaddr;
+                 }
+                 if (vaddr_ef > info->end_code) {
+                     info->end_code = vaddr_ef;
++                    if (!afl_end_code) afl_end_code = vaddr_ef;
+                 }
+             }
+             if (elf_prot & PROT_WRITE) {
+diff -ruN qemu-2.10.0/linux-user/syscall.c qemu-2.10.0-new/linux-user/syscall.c
+--- qemu-2.10.0/linux-user/syscall.c	2017-08-30 12:50:41.000000000 -0400
++++ qemu-2.10.0-new/linux-user/syscall.c	2018-04-23 22:51:51.500768375 -0400
+@@ -7689,6 +7689,56 @@
+ };
+ #endif
+ 
++
++static int trace_self_maps(void *cpu_env)
++{
++    CPUState *cpu = ENV_GET_CPU((CPUArchState *)cpu_env);
++    TaskState *ts = cpu->opaque;
++    FILE *fp;
++    char *line = NULL;
++    size_t len = 0;
++    ssize_t read;
++
++    fp = fopen("/proc/self/maps", "r");
++    if (fp == NULL) {
++        return -EACCES;
++    }
++
++    while ((read = getline(&line, &len, fp)) != -1) {
++        int fields, dev_maj, dev_min, inode;
++        uint64_t min, max, offset;
++        char flag_r, flag_w, flag_x, flag_p;
++        char path[512] = "";
++        fields = sscanf(line, "%"PRIx64"-%"PRIx64" %c%c%c%c %"PRIx64" %x:%x %d"
++                        " %512s", &min, &max, &flag_r, &flag_w, &flag_x,
++                        &flag_p, &offset, &dev_maj, &dev_min, &inode, path);
++
++        if ((fields < 10) || (fields > 11)) {
++            continue;
++        }
++        if (h2g_valid(min)) {
++            int flags = page_get_flags(h2g(min));
++            max = h2g_valid(max - 1) ? max : (uintptr_t)g2h(GUEST_ADDR_MAX);
++            if (page_check_range(h2g(min), max - min, flags) == -1) {
++                continue;
++            }
++            if (h2g(min) == ts->info->stack_limit) {
++                pstrcpy(path, sizeof(path), "      [stack]");
++            }
++
++            qemu_log(TARGET_ABI_FMT_lx ":" TARGET_ABI_FMT_lx ":%s%s\n", h2g(min), h2g(max - 1) + 1,
++                    path[0] ? "         " : "", path);
++        }
++    }
++
++    free(line);
++    fclose(fp);
++
++    return 0;
++}
++
++
++
+ /* do_syscall() should always have a single exit point at the end so
+    that actions, such as logging of syscall results, can be performed.
+    All errnos that do_syscall() returns must be -TARGET_<errcode>. */
+diff -ruN qemu-2.10.0/util/log.c qemu-2.10.0-new/util/log.c
+--- qemu-2.10.0/util/log.c	2017-08-30 12:50:41.000000000 -0400
++++ qemu-2.10.0-new/util/log.c	2018-04-23 22:51:51.500768375 -0400
+@@ -272,6 +272,8 @@
+     { CPU_LOG_TB_NOCHAIN, "nochain",
+       "do not chain compiled TBs so that \"exec\" and \"cpu\" show\n"
+       "complete traces" },
++    { CPU_LOG_TB, "tb",
++      "show translation blocks' start and end address" },
+     { 0, NULL, NULL },
+ };
+ 
