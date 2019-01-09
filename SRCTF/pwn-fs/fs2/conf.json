@@ -1,0 +1,14 @@
+{
+"flag_dir":"/ctfs/format_string/fs2/flag",
+"flag_pre":"FLAG_WHAT_IS_YOUR_SECRET_",
+"execs":[
+    {"cmd" : " chown {0[0]}:{0[1]} /src/{0[2]}/", "num_args" : 3, "args" : ["__GUEST__", "__GUEST__", "__DIR__"], "options" : ""},
+    {"cmd" : " chmod {0[0]} /src/{0[1]}", "num_args" : 2, "args" : ["755", "__DIR__"], "options" : ""},
+    {"cmd" : " chown {0[0]}:{0[1]} /src/{0[2]}/format", "num_args" : 3, "args" : ["__FLAG__", "__GUEST__", "__DIR__"], "options" : ""},
+    {"cmd" : " chmod {0[0]} /src/{0[1]}/format", "num_args" : 2, "args" : ["4550", "__DIR__"], "options" : ""},
+    {"cmd" : " chattr +i /src/{0[0]}/format", "num_args" : 1, "args" : ["__DIR__"], "options" : "--privileged "},
+    {"cmd" : " chown {0[0]}:{0[1]} /src/{0[2]}/flag", "num_args" : 3, "args" : ["__FLAG__", "__FLAG__", "__DIR__"], "options" : ""},
+    {"cmd" : " chmod {0[0]} /src/{0[1]}/flag", "num_args" : 2, "args" : ["400", "__DIR__"], "options" : ""},
+    {"cmd" : " chattr +i /src/{0[0]}/flag", "num_args" : 1, "args" : ["__DIR__"], "options" : "--privileged "}
+]
+}
