@@ -1,0 +1,1 @@
+<?php $FLAG = "FLAG_BAD_PASS_QWERTY_6FAR0I"; ?>

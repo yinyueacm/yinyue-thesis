@@ -1,0 +1,35 @@
+{% extends "reuse/ui/base.html" %}
+{% load staticfiles %}
+{% block content %}
+
+    <div class="container">
+
+        <div class="blog-header">
+            <h3 class="blog-title">SR-CTF Platform</h3>
+            <p class="lead blog-description">Present by NSSLab@UGA</p>
+        </div>
+
+        <div class="row">
+
+            <div class="col-sm-8 blog-main">
+
+                <div class="blog-post">
+
+                    <p>This project is being sponsored by the NSF with the goal of enhancing and broadening computer security education through the development of Stepwise and Reusable CTF challenges that emphasize problem solving.
+
+                    <p><button type="button" class="btn btn-primary">Stepwise</button> A user's skillset should grow as they progress from one challenge to the next. That growth should be relied upon for later challenges. A natural progression from challenge to challenge should be evident.
+
+                    <p><button type="button" class="btn btn-success">Reusable</button> Each challenge should be tunable such that unique variants can be generated with minimal effort.</p>
+                    <hr>
+                    <h3>Sponsored By</h3>
+                    <img src="{% static 'images/logo-nsf.jpg' %}" height="10%" width="10%" alt="NSF Logo">
+                </div><!-- /.blog-post -->
+                
+            </div><!-- /.blog-main -->
+
+        </div><!-- /.row -->
+
+    </div><!-- /.container -->
+
+
+{% endblock %}

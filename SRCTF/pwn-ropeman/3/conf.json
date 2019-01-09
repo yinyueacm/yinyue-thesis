@@ -1,0 +1,19 @@
+{
+"flag_dir":"/ctfs/ropeman/rw/flag",
+"flag_pre":"10000|flag-->|FLAG_ROP_ME_IF_YOU_C@N_",
+"execs":[
+	{"cmd" : " chown {0[0]}:{0[1]} /src/{0[2]}/", "num_args" : 3, "args" : ["__GUEST__", "__GUEST__", "__DIR__"], "options" : ""},
+    {"cmd" : " chmod {0[0]} /src/{0[1]}", "num_args" : 2, "args" : ["755", "__DIR__"], "options" : ""},
+    {"cmd" : " chown {0[0]}:{0[1]} /src/{0[2]}/ro", "num_args" : 3, "args" : ["__GUEST__", "__GUEST__", "__DIR__"], "options" : ""},
+    {"cmd" : " chmod {0[0]} /src/{0[1]}/ro", "num_args" : 2, "args" : ["755", "__DIR__"], "options" : ""},
+    {"cmd" : " chown {0[0]}:{0[1]} /src/{0[2]}/ro/ropeman", "num_args" : 3, "args" : ["__FLAG__", "__GUEST__", "__DIR__"], "options" : ""},
+    {"cmd" : " chmod {0[0]} /src/{0[1]}/ro/ropeman", "num_args" : 2, "args" : ["4550", "__DIR__"], "options" : ""},
+    {"cmd" : " chattr +i /src/{0[0]}/ro/ropeman", "num_args" : 1, "args" : ["__DIR__"], "options" : "--privileged "},
+    {"cmd" : " chown -R {0[1]}:{0[1]} /src/{0[2]}/ro/wordlists", "num_args" : 3, "args" : ["__FLAG__", "__FLAG__", "__DIR__"], "options" : ""},
+    {"cmd" : " chown {0[0]}:{0[1]} /src/{0[2]}/rw", "num_args" : 3, "args" : ["__FLAG__", "__FLAG__", "__DIR__"], "options" : ""},
+    {"cmd" : " chmod {0[0]} /src/{0[1]}/rw", "num_args" : 2, "args" : ["755", "__DIR__"], "options" : ""},
+    {"cmd" : " chown {0[0]}:{0[1]} /src/{0[2]}/rw/flag", "num_args" : 3, "args" : ["__FLAG__", "__FLAG__", "__DIR__"], "options" : ""},
+    {"cmd" : " chmod {0[0]} /src/{0[1]}/rw/flag", "num_args" : 2, "args" : ["400", "__DIR__"], "options" : ""},
+    {"cmd" : " chattr +i /src/{0[0]}/rw/flag", "num_args" : 1, "args" : ["__DIR__"], "options" : "--privileged "}
+]
+}

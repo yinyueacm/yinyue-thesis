@@ -1,0 +1,99 @@
+{% extends "reuse/ui/base.html" %}
+{% load staticfiles %}
+{% block content %}
+<div class="container">
+{% if cat_info %}
+    
+        <div class="blog-header">
+            {% if c_type %}
+                <p class="lead blog-description">{{ c_type.name }}</p>
+            {% else %}
+                <p class="lead blog-description">Misc</p>
+            {% endif %}
+        </div>
+
+        <div class="row">
+
+            <div class="col-sm-8 blog-main">
+
+                <div class="blog-post">
+                    <h2 class="blog-post-title">{{ cat_info.typename }}</h2>
+                    <h3><p class="blog-post-meta">{{ cat_info.name }}</p></h3>
+                    <h5>Related Tags</h5>
+                    <!--<p>
+                    <button type="button" class="btn btn-primary">Linux</button>
+                    <button type="button" class="btn btn-success">Stack</button>
+                    <button type="button" class="btn btn-info">Buffer Overflow</button>
+                    <button type="button" class="btn btn-danger">No Canary</button>
+                    </p>-->   
+                    {% if ret_tags %}
+                        {% for tag in ret_tags %}
+                            {% if tag.description == "no" %}
+                                <button type="button" class="btn btn-danger">{{ tag.name }}</button>
+                            {% else %}
+                                <button type="button" class="btn btn-success">{{ tag.name }}</button>
+                            {% endif %}
+                        {% endfor %}
+                    {% else %}
+                        <!--<button type="button" class="btn btn-warning">(Untagged)</button>-->
+                    {% endif %}
+
+                    <hr>
+                    <h2>Objection</h2>
+                    <p>{{ cat_info.description|safe }}</p>
+                    <hr>
+
+                </div><!-- /.blog-post -->
+
+            </div><!-- /.blog-main -->
+
+        </div><!-- /.row -->
+        <h2>Challenges</h2>
+        <div class="col-sm-8">
+            {% if ctfs %}
+                {% if c_type.id == 3 %}<!-- Reverse Type Just for download -->
+                    {% for ctf in ctfs %}
+                        <div class="panel panel-info">
+                            <div class="panel-heading">
+                            <p>
+                            Level <span class="badge">{{ ctf.level }}</span><br><h4>{{ ctf.name }}</h4>
+                            </p>
+                            </div>
+                            <div class="panel-body">
+                                {{ ctf.desc|safe }}
+                                <p><a class="btn btn-default" href="{% static '' %}{{ ctf.src_path}}"  target="_blank" role="button">Download &raquo;</a></p>
+                                <br>
+                                <a href="/reuse/yourctf/?ctfid={{ ctf.id }}">Submit your flag</a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}<!-- Pwn or Web challenges list -->
+                    {% for ctf in ctfs %}
+                        <div class="panel panel-info">
+                            <div class="panel-heading">
+                            <p>
+                            <a href="/reuse/{{ cat_info.id }}/{{ ctf.level }}">Level <span class="badge">{{ ctf.level }}</span><br><h4>{{ ctf.name }}</h4></a>
+                            </p>
+                            </div>
+                            <div class="panel-body">
+                                {{ ctf.desc|safe }}
+                                <p><a class="btn btn-default" href="/reuse/{{ cat_info.id }}/{{ ctf.level }}" role="button">View details &raquo;</a></p>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endif %}
+        
+        
+        </div><!-- /.col-sm -->
+        
+
+      
+{% else %}
+    <br><br><br><br><br><br><br><br><br>
+    <div class="blog-post">
+    <h2>No challenges are available. <br>Please login your account or check your request.</h2><br><br><br><br><br><br><br><br><br>
+    </div>
+{% endif %}
+</div><!-- /.container -->
+{% endblock %}

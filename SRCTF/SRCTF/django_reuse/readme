@@ -1,0 +1,3 @@
+stunnel4 dev_https
+HTTPS=1 python manage.py runserver --insecure 0.0.0.0:8443
+docker start $(docker ps -a -q)

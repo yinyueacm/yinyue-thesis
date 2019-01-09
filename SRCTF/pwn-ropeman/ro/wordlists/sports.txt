@@ -1,0 +1,84 @@
+athletic
+archery
+baseball
+basketball 
+beach volleyball
+bobsleding 
+bowling
+badmington
+boxing
+canoeing
+cricket 
+croquet 
+cycling 
+curling 
+diving
+dodgeball 
+equestrian horseback riding 
+extreme sports 
+fishing 
+fencing 
+football 
+golf 
+gymnastics 
+hockey 
+horse racing 
+handball 
+hunting 
+high jump 
+iceskating 
+javelin 
+judo 
+jet skiing 
+karate 
+long jump 
+lacrosse 
+luge 
+motor cycle 
+martial arts 
+netball 
+orianteering 
+polo 
+quad four 
+rugby 
+running 
+relay 
+rugby football 
+rock climbing 
+rounders 
+racquet ball 
+rowing 
+soccer 
+surfing 
+sailing 
+shooting 
+snooker 
+swimming 
+skating 
+skiing 
+shotput 
+snowboarding 
+squash 
+softball 
+show jumping 
+ski jumping 
+tennis 
+table tennis 
+tag rugby 
+taekwondo 
+triple jump 
+ultimate frisby 
+underwater rugby 
+underwater hockey 
+volleyball 
+wrestling 
+wintersport 
+weightlifting 
+watersports 
+walking 
+waterskiing 
+waterpolo 
+windsurfing 
+xare 
+yachting 
+zorbing

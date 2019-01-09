@@ -1,0 +1,32 @@
+# one of "x86_64","i386","mips","aarch64","ppc","mipsel","armeb","arm". This
+# value determines the architecture on which they service runs. In case the
+# architecture is different than "x86_64" or "i386", qemu­<architeture_name>
+# will be used to run the binary.
+architecture: x86_64
+
+# the name of the service (the length must be between 4 and 32 characters, only
+# alphanumeric characters and “­_:” are allowed).
+service_name: hangman.out
+
+# either “console” or “web”. A console service will be run using xinetd,
+# whereas a web service will be run in Apache (more details below).
+type: console
+
+# a “player­friendly” description of the service. What is the (uncompromised)
+# service supposed to do? Is it a forum? An email server? A teapot controller?
+description: Password-protected note storage service in C.
+
+# a “player­friendly” description of what the flag_idis in this service. That
+# is, how do we tell “secrets” apart from one another? Your service must store
+# many, but we set or get one flag at a time. Same goes for exploiters: we tell
+# them which flag to get, and accept only that one. More details on this later.
+flag_id_description: Flags are identified by the note name.
+
+# a list of debian packages which will be installed before the service
+# installation using the “apt­get install” command.
+apt_dependencies: - sl
+
+# a list of pip­installable packages which will be installed before the service
+# installation using “pip install ­­user”
+pip_dependecies:
+

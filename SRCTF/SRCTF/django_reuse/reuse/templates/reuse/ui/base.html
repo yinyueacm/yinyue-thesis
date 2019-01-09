@@ -1,0 +1,129 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+        <meta name="description" content="">
+        <meta name="author" content="">
+        <link rel="icon" href="{% static 'images/favicon.ico' %}">
+
+        <title>SR-CTF</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+        <!-- Bootstrap core CSS -->
+        <link href="{% static 'dist/css/bootstrap.min.css' %}" rel="stylesheet">
+
+        <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+        <link href="{% static 'assets/css/ie10-viewport-bug-workaround.css' %}" rel="stylesheet">
+
+        <!-- Custom styles for this template -->
+        <link href="{% static 'dist/css/blog.css' %}" rel="stylesheet">
+        <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
+        <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+        <script src="{% static 'assets/js/ie-emulation-modes-warning.js' %}"></script>
+
+        <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+          <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+          <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+    </head>
+    <body>
+        <div class="blog-masthead">
+          <div class="container">
+            <nav class="blog-nav">
+                <font class="navbar-brand" color="white"><p style="font-size:20px">SR-CTF</p></font>
+                <a class="blog-nav-item" href="/reuse">Home</a>
+                <span class="dropdown">
+                <a href="#" class="blog-nav-item" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Pwn<span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        {% for cat in cats %}
+                            {% if cat.ctype_id == 1 %}
+                                <li><a href="/reuse/{{ cat.id }}/">{{ cat.typename }}</a></li>
+                            {% endif %}
+                        {% endfor %}
+                        <!--<li class="disabled"><a href="/reuse/6/">Stack Buffer Overflow:Overwrite:Coming Soon</a></li>
+                        <li><a href="/reuse/2/">Stack Buffer Overflow:ROP</a></li>
+                        <li><a href="/reuse/5/">Format String</a></li>
+                        <li><a href="/reuse/1/">Heap Double Free</a></li>-->
+                    </ul>
+                </span>
+                <span class="dropdown">
+                <a href="#" class="blog-nav-item" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Web<span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        {% for cat in cats %}
+                            {% if cat.ctype_id == 2 %}
+                                <li><a href="/reuse/{{ cat.id }}/">{{ cat.typename }}</a></li>
+                            {% endif %}
+                        {% endfor %}
+                        <!--<li><a href="/reuse/8/">Basic</a></li>
+                        <li><a href="/reuse/7/">SQL Injection</a></li>-->
+                    </ul>
+                </span>
+                <span class="dropdown">
+                <a href="#" class="blog-nav-item" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Reverse<span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        {% for cat in cats %}
+                            {% if cat.ctype_id == 3 %}
+                                <li><a href="/reuse/{{ cat.id }}/">{{ cat.typename }}</a></li>
+                            {% endif %}
+                        {% endfor %}
+                        <!--<li><a href="/reuse/4">Basic</a></li>
+                        <li class="disabled"><a href="#">Android:Coming Soon</a></li>-->
+                    </ul>
+                </span>
+                <a class="blog-nav-item" href="/reuse/scoreboard">Scoreboard</a>
+                <a class="blog-nav-item" href="/reuse/about">About</a>
+                <span class="navbar-form navbar-right">
+                    {% if user.is_authenticated %}
+                    Dear {{ user.username }}
+                    <a id="logout" href="/reuse/accounts/logout/?next=/reuse/" class="btn btn-success">Logout</a>
+                    {% else %} 
+                    <a id="normal_login" href="/reuse/accounts/login/?next={{ request.path|default_if_none:'/reuse'}}" class="btn btn-success">
+                    Sign in/Sign up SR-CTF
+                    </a>
+                    {% endif %}
+                </span>
+            </nav>
+          </div>
+        </div>
+
+
+    
+{% block content %}{% endblock %}
+
+    <footer class="blog-footer">
+      <p>This material is based upon work supported by the National Science Foundation under Award No. 1318881.</p>
+    </footer>
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    
+    <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')</script>
+    <script src="{% static 'dist/js/bootstrap.min.js' %}"></script>
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="{% static 'assets/js/ie10-viewport-bug-workaround.js' %}"></script>
+    <script>
+        $('#myButton')
+        .on('click', function () {
+            var btn = $(this)
+            btn.button('loading')
+            setTimeout(function () {
+                btn.button('reset')
+            }, 3000)
+        });
+        
+        //function showIt() {
+          
+        //  document.getElementById("startctf").style.visibility = "visible";
+        //  document.getElementById("prepare").innerHTML = "<p><h3>Your challenge is ready!</h3></p>"
+        //}
+        //setTimeout("showIt()", 5000); // after 5 secs
+    </script>
+    </body>
+</html>    

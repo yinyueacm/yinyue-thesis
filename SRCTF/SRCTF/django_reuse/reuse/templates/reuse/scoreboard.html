@@ -1,0 +1,22 @@
+{% extends "reuse/ui/base.html" %}
+{% load staticfiles %} 
+
+{% block content %}
+
+<div class="container">
+<BR><h2>Current Standings</h2><BR><BR>
+{% if score_list %}
+	<TABLE ><TR><TH width=30%><p>Rank</p></TH><TH width=60%><p>User</p></TH><TH><p>Points</p></TH></TR>
+	{% for guest in score_list %}
+		<TR class="{% cycle 'blue' 'grey' %}">
+		<TD><p>{{forloop.counter}}</p></TD><TD><p>{{guest.user}}</p></A></TD><TD><p> {{ guest.score }}</p></TD>
+		</TR>
+	{% endfor %}
+	</TABLE>	
+
+</div>
+{% else %}
+No active users...
+{% endif %}
+
+{% endblock %}

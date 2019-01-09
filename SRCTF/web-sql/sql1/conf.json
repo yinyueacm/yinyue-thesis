@@ -1,0 +1,11 @@
+{
+"flag_dir":"/ctfs/www/sql1/config.php",
+"flag_pre":"<?php $FLAG = \"FLAG_DEBUG_SQL_INJECTION_",
+"flag_post":"\"; ?>",
+"execs":[
+{"cmd" : " chmod 444 /app/", "extra" : "/config.php", "options" : ""}
+],
+"sql":[
+{"cmd" : " mysql -uroot <<< \"update sqlctf.users set password='qwerty654321admin' where username = 'admin';\""}
+]
+}

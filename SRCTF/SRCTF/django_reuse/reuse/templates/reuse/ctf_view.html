@@ -1,0 +1,72 @@
+{% extends "reuse/ui/base.html" %}
+{% block content %}
+<div class="container">
+{% if ctf and c_cat%}
+
+    {% if c_cat.ctype_id == 3%}
+        <div class="blog-post">
+        <br><br><br><br><br><br><br><br><br>
+        <h2>Wrong request. Please check your request or typed url.</h2><br><br><br><br><br><br><br><br><br>
+        </div>
+    {% else %}
+
+        <div class="row">
+
+            <div class="col-sm-8 blog-main">
+
+            <hr>
+                <div class="col-sm-12">
+                    <h4>{{ ctf.name }}<span class="badge">{{ ctf.level }}</span></h4>
+                    <p>
+                    {% if cha %}
+                        {% if cha.is_solved == 1 %}
+                        <button type="button" class="btn btn-success">Solved</button>
+                        {% else %}
+                        <button type="button" class="btn btn-primary">Not solved yet</button>
+                        {% endif %}
+                    {% endif %}
+                    </p>
+                    <!--<p><button type="button" class="btn btn-primary">x86</button>
+                    <button type="button" class="btn btn-success">local exploit</button>
+                    
+                    </p>-->
+                    {{ ctf.desc|safe }}
+
+                    <br><br>
+                    {% if user.is_authenticated%}
+                        {%  if user.guest.is_granted %}
+                            <div class="panel panel-info">
+                                <div class="panel-heading">
+                                    <p>
+                                    <h3>Start your challenge</h3>
+                                    <form action="/reuse/yourctf/" method="get">
+                                        <input type="text" value="{{ ctf.id }}" name="ctfid" hidden readonly/>
+                                        <button type="submit" id="myButton" data-loading-text="Loading..." class="btn btn-primary" autocomplete="off" data-toggle="collapse" data-target="#hint">
+                                            start
+                                        </button>
+                                    </form>
+                                    </p>
+                                </div>
+                                <div class="panel-body">
+                            {% else %}
+                                <h4>Please contact the admin to request permissions to use the services.</h4>
+                            {% endif %}
+                                </div>
+                            </div>
+                    {% else %}
+                    <h4>Please login to start your challenge.</h4>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+    {% endif %}  
+{% else %}
+        <br><br><br><br><br><br><br><br><br>
+        <div class="blog-post">
+        <h2>No challenge are available. Please check your request or typed url.</h2><br><br><br><br><br><br><br><br><br>
+        </di>
+    
+{% endif %}
+</div><!-- /.container -->
+{% endblock %}

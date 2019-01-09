@@ -1,0 +1,99 @@
+{% extends "reuse/ui/base.html" %}
+{% load staticfiles %} 
+{% block content %}
+
+{% if ctf %}
+    <div class="container">
+        <div class="row">
+
+            <div class="col-sm-8 blog-main">
+
+            <hr>
+                <div class="col-sm-12">
+                    <h4>{{ ctf.name }}<span class="badge">{{ ctf.level }}</span></h4>
+                    <p>
+                    {% if cha %}
+                        {% if cha.is_solved == 1 %}
+                        <button type="button" class="btn btn-success">Solved</button>
+                        {% else %}
+                        <button type="button" class="btn btn-primary">Not solved yet</button>
+                        {% endif %}
+                    {% endif %}
+                    </p>
+                    <!--<p><button type="button" class="btn btn-primary">x86</button>
+                    <button type="button" class="btn btn-success">local exploit</button>
+                    
+                    </p>-->
+                    {{ ctf.desc|safe }}
+
+                    <br><br>
+                    {% if user.is_authenticated%}
+                        {%  if user.guest.is_granted %}
+                            <div class="panel panel-info">
+                                <div class="panel-heading" id="prepare" style="visibility: visible">
+                                    <p>
+                                    <h3>Your challenge is ready!</h3>
+                                    </p>
+                                </div>
+                                <div class="panel-body">
+                            {% else %}
+                                <h4>Please contact the admin to request permissions to use the services.</h4>
+                            {% endif %}
+                                
+                                {% if port %}
+                                    {% if port != -1 %}
+                                        {% if ctf.cat.ctype.id == 3 %}
+                                            This is a static challenge, please submit your flag below.<br>
+                                        {% else %}
+                                            {% if ctf.cat.ctype.id == 1 %}
+                                                You can now connect the environment with the following command:<br>
+                                                <pre>ssh guest{{user.id}}@{{ s_domain }} -p {{ port }}<br>Your password_id: {{ user.guest.pswd_id }}<br>(Please ask the admin or instructor to get your login password.)
+                                                </pre>
+                                            {% elif ctf.cat.ctype.id == 2 %}
+                                                You can now connect the environment with the following link:<br>
+                                                <pre>Click to start the challenge: <div id="startctf" style="visibility: visible"><a href="http://{{ s_domain }}:{{ port }}/ctf_{{ user.id }}_{{ ctf.id }}" target="_blank">{{ s_domain }}:{{ port }}/ctf_{{ user.id }}_{{ ctf.id }}</a></div><br>Please wait for a few seconds for this target link.<br>(Refresh the target page if needed)</pre>
+                                            {% endif %}
+                                            
+                                            Please do not remove the files in the environment<br>
+                                            Please note that your environment will be lost if your session is destroyed.<br>
+                                            We will save your work under the challenge directory temporarily.<br>
+                                            To be on the safe side, always keep a local copy of your work. <br><br>
+                                        {% endif %}
+                                        {% if check_flag %}
+                                            {% if check_flag == 1 %}
+                                            Congratulations! You made it!
+                                            {% elif check_flag == -1 %}
+                                            Sorry, wrong flag. Please try again.
+                                            {% endif %}
+                                        {% endif %}
+                                        <form action="/reuse/yourctf/" method="get">
+                                            <input type="text" name="flag" size="35"/>
+                                            <input type="text" value="{{ ctf.id }}" name="ctfid" hidden readonly/>
+                                            <button type="submit" id="flagButton" class="btn btn-success" >
+                                                Submit your flag
+                                            </button>
+                                            <br>(All the flags are starting with "FLAG_")
+                                        </form>
+                                    {% else %}
+                                        error code: {{ port }}
+                                        <h4>Please check your request or contact the admin.</h4>
+                                    {% endif %}
+                                {% else %}
+                                We are now having trouble release a virtual environment for you.<br> Please feel free to contact the admin to fix it.
+                                {% endif %}
+                                </div>
+                            </div>
+                    {% else %}
+                    <h4>Please login to start your challenge.</h4>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div><!-- /.container -->
+      
+{% else %}
+    <br><br><br><br><br><br><br><br><br>
+    <h2>No challenges are available. Please check your request or typed url.</h2><br><br><br><br><br><br><br><br><br>
+{% endif %}
+
+{% endblock %}

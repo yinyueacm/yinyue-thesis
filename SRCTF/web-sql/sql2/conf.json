@@ -1,0 +1,11 @@
+{
+"flag_dir":"/ctfs/www/sql2/config.php",
+"flag_pre":"<?php $FLAG = \"FLAG_MYSQL_NOT_REAL_ESCAPE_",
+"flag_post":"\"; ?>",
+"execs":[
+{"cmd" : " chmod 444 /app/", "extra" : "/config.php", "options" : ""}
+],
+"sql":[
+{"cmd" : " mysql -uroot <<< \"update sqlctf.users set password='qwerty654321admin' where username = 'admin';\""}
+]
+}
